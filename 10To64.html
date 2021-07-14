@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>十进制浮点数转六十四进制</title>
+    <style>
+        table, tr, td {
+            border: 1px solid gray;
+            text-align: center;
+            border-collapse: collapse;
+        }
+        td {
+            width: 24px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="txt1" placeholder="请输入十进制数">
+    <button type="submit" id="btn1">十进制转六十四进制</button>
+    <input type="text" id="txt2" readonly>
+    </br>
+    <input type="text" id="txt3" placeholder="请输入六十四进制数">
+    <button type="submit" id="btn2">六十四进制转十进制</button>
+    <input type="text" id="txt4" readonly>
+    <script>
+        let arr = [
+            '0','1','2','3','4','5','6','7','8','9',
+            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+            '*','#'
+        ];
+        // 画表格
+        let table = document.createElement('Table');
+        let tr1 = document.createElement('tr');
+        table.appendChild(tr1);
+        let tr2 = document.createElement('tr');
+        table.appendChild(tr2);
+        for(let i = 0; i < arr.length; i++) {
+            let td1 = document.createElement('td');
+            let node1 = document.createTextNode(i);
+            td1.appendChild(node1);
+            tr1.appendChild(td1);
+            let td2 = document.createElement('td');
+            let node2 = document.createTextNode(arr[i]);
+            td2.appendChild(node2);
+            tr2.appendChild(td2);
+        }
+        document.body.appendChild(table);
+
+        // 10 to 64
+        function code(num) {
+            let int = parseInt(num);
+            let float = num - int;
+            // 整数部分
+            let shang = parseInt(int / 64);
+            let yushu = int % 64;
+            let intRes = [];
+            intRes.unshift(arr[yushu]);
+            while(shang != 0) {
+                int = shang;
+                shang = parseInt(int / 64);
+                yushu = int % 64;
+                intRes.unshift(arr[yushu]);
+            }
+            let str = intRes.join('');
+
+            // 小数部分
+            let floatRes = [];
+            while(float > 0) {
+                float = float*64;
+                floatRes.push(arr[parseInt(float)]);
+                float = float - parseInt(float);
+            }
+            if(floatRes.length>0) {
+                str = `${str}.${floatRes.join('')}`;
+            }
+            return str;
+        }
+        
+        // 64 to 10
+        function decode(str) {
+            let intStr = str.split('.')[0];
+            let floatStr = str.split('.')[1];
+            // 整数部分
+            let num = 0;
+            for (let i = 0; i<intStr.length; i++) {
+                num = num + arr.indexOf(intStr[i]) * Math.pow(64, intStr.length-1-i)
+            }
+            // 小数部分
+            if(floatStr && floatStr.length) {
+                for (let i = 0; i < floatStr.length; i++) {
+                    num = num + arr.indexOf(floatStr[i]) * Math.pow(64, -(i+1))
+                }
+            }
+            return num
+        }
+
+        let txt1 = document.getElementById('txt1');
+        let txt2 = document.getElementById('txt2');
+        let btn1 = document.getElementById('btn1');
+        btn1.onclick = function() {
+            txt2.value = code(txt1.value);
+        }
+        let txt3 = document.getElementById('txt3');
+        let txt4 = document.getElementById('txt4');
+        let btn2 = document.getElementById('btn2');
+        btn2.onclick = function() {
+            txt4.value = decode(txt3.value);
+        }
+    </script>
+</body>
+</html>
