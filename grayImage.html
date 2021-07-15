@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>灰度图</title>
+</head>
+
+<body>
+	<button type="submit" id="btn">上传图片</button>
+	<button type="submit" id="btnGray">灰度处理</button>
+	<button type="submit" id="btnDownload">下载图片</button>
+	<canvas id="myCanvas" width="500" height="500" style="display: block"></canvas>
+	<script>
+		let btn = document.getElementById("btn");
+		let btnGray = document.getElementById("btnGray");
+		let btnDownload = document.getElementById("btnDownload");
+		let canvas = document.getElementById("myCanvas");
+		let ctx = canvas.getContext("2d");
+		// 打开图片
+		btn.addEventListener("click", async (e) => {
+			try {
+				const hFiles = await window.showOpenFilePicker({
+					types: [
+						{
+							description: "图片",
+							accept: {
+								"image/*": [".png", ".jpg"],
+							},
+							excludeAcceptAllOption: true,
+							multiple: false,
+						},
+					],
+				});
+				if (!hFiles || !hFiles.length) return;
+				const hFile = hFiles[0];
+				const file = await hFile.getFile();
+				const image = await window.createImageBitmap(file);
+				ctx.drawImage(image, 10, 10, image.width, image.height);
+			} catch (error) {
+				console.error(error);
+			}
+		});
+		// 灰度处理
+		btnGray.onclick = function () {
+			let pixels = ctx.getImageData(10, 10, 500, 500);
+			for (let i = 0, len = pixels.data.length; i < len; i += 4) {
+				let gray = Math.floor(
+					(pixels.data[i] + pixels.data[i + 1] + pixels.data[i + 2]) / 3
+				);
+				pixels.data[i] = gray;
+				pixels.data[i + 1] = gray;
+				pixels.data[i + 2] = gray;
+			}
+			ctx.putImageData(pixels, 10, 10);
+		};
+		// 下载
+		btnDownload.onclick = function () {
+			const alink = document.createElement("a");
+			alink.href = canvas.toDataURL("image/png");
+			alink.download = "test.jpg";
+			alink.click();
+		};
+	</script>
+</body>
+
+</html>
