@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链表反转</title>
+</head>
+
+<body>
+    <script>
+        // leetcode 206: https://leetcode-cn.com/problems/reverse-linked-list/
+        /**
+         * Definition for singly-linked list.
+         * function ListNode(val, next) {
+         *     this.val = (val===undefined ? 0 : val)
+         *     this.next = (next===undefined ? null : next)
+         * }
+         */
+        /**
+         * @param {ListNode} head
+         * @return {ListNode}
+         */
+        var reverseList = function (head) {
+            if (!head || !head.next) return head;
+            // 迭代
+            let cur = head;
+            let pre = null;
+            while (cur) {
+                let temp = cur.next;
+                cur.next = pre;
+                pre = cur;
+                cur = temp;
+            }
+            return pre;
+        };
+
+        var reverseList = function (head) {
+            if (!head || !head.next) return head;
+            // 递归
+            let res = reverseList(head.next);
+            head.next.next = head;
+            head.next = null;
+            return res;
+        };
+    </script>
+</body>
+
+</html>
