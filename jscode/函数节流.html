@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数节流</title>
+    <!-- 固定时间之内只执行一次； -->
+    <style>
+        div {
+            width: 100px;
+            height: 5000px;
+            background: aqua;
+        }
+    </style>
+</head>
+<body>
+    <div></div>
+    <script>
+        function throttle(fn, timer=1000) {
+            let prev = new Date();
+            return function (...args) {
+                let now = new Date;
+                if(now - prev > timer) {
+                    fn.apply(this, args)
+                    prev = now;
+                }
+            }
+        }
+        let a = 1;
+        // document.addEventListener('scroll', () => {
+        //     console.log(a++);
+        // });
+        document.addEventListener('scroll', throttle(() => {
+            console.log(a++);
+        }, 1000))
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数防抖debounce</title>
+    <!-- 最后一次调用后，间隔固定时间再执行 -->
+    <!-- 就像班车，可以连续上人，如果1分钟后无人上车就发车了。 -->
+    <style>
+        div {
+            width: 100px;
+            height: 5000px;
+            background: aqua;
+        }
+    </style>
+</head>
+<body>
+    <div></div>
+    <script>
+        function debounce(fn, offset=1000) {
+            let timer;
+            return function (...args) {
+                if(timer) clearTimeout(timer);
+                timer = setTimeout(function() {
+                    fn.apply(this, args)
+                }, offset);
+            }
+        }
+        let a = 1;
+        // document.addEventListener('scroll', () => {
+        //     console.log(a++);
+        // });
+        document.addEventListener('scroll', debounce(() => {
+            console.log(a++);
+        }, 1000))
+    </script>
+</body>
+</html>
